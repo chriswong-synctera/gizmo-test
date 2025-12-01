@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>External Card Creation Widget - Cross-Origin Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        margin: 0;
+        min-height: 100vh;
+        background: #f5f5f5;
+      }
+      .test-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+      }
+      .test-section h3 {
+        margin-top: 0;
+      }
+      .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 12px;
+        margin: 20px 0;
+        border-radius: 4px;
+      }
+      .info-box code {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'SF Mono', 'Monaco', monospace;
+        font-size: 13px;
+      }
+      .token-config-container {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .token-label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 14px;
+        min-width: 120px;
+        margin: 0;
+      }
+      .token-input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #2c3e50;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        outline: none;
+        height: 44px;
+        min-height: 44px;
+        box-sizing: border-box;
+      }
+      .token-input:focus {
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>External Card Creation Widget - Cross-Origin Test</h1>
+
+      <div class="info-box">
+        <strong>🔍 Testing from separate origin</strong><br />
+        This page loads the widget from <code>assets-staging.synctera.com</code> while being served from a different origin.<br />
+        Current origin: <code id="currentOrigin"></code>
+      </div>
+
+      <div class="test-section">
+        <h3>Widget Token Configuration</h3>
+        <div class="token-config-container">
+          <label for="widgetToken" class="token-label">Widget Token:</label>
+          <input
+            type="text"
+            id="widgetToken"
+            class="token-input"
+            placeholder="Paste your widget token here"
+            value="test-token-123"
+          />
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>Widget (loaded from staging bucket)</h3>
+        <!-- 
+          Key points for cross-origin testing:
+          1. env="staging" - matches the environment where widget is deployed
+          2. Widget JS is loaded from assets-staging.synctera.com (see script tag below)
+          3. Iframes will be loaded from assets-staging.synctera.com based on env
+          4. This page can be served from ANY origin (localhost:8000, localhost:9000, etc.)
+        -->
+        <external-card-creation
+          id="externalCardCreation"
+          token="test-token-123"
+          includeAddress
+          env="staging"
+          theme="night-shift"
+          custom-labels='{"widgetTitle":"External card","cardNameLabel":"Cardholder Name","cardNamePlaceholder":"Cardholder Name","expirationDateLabel":"Card Expiration Date","securityCodeLabel":"Card Security Code","cardExpPlaceholder":"MM/YY format","submitButtonText":"Use Card"}'
+        ></external-card-creation>
+      </div>
+    </div>
+
+    <!-- 
+      Load widget from staging bucket (cross-origin)
+      This demonstrates loading the widget from a different origin than where this HTML is served
+    -->
+    <script
+      type="module"
+      src="https://assets-staging.synctera.com/widgets/external-card-creation/v1.0.0/index.js"
+    ></script>
+
+    <!-- Alternative: Load from sandbox -->
+    <!-- <script
+      type="module"
+      src="https://assets-sandbox.synctera.com/widgets/external-card-creation/v1.0.0/index.js"
+    ></script> -->
+
+    <!-- Alternative: Load from production -->
+    <!-- <script
+      type="module"
+      src="https://assets.synctera.com/widgets/external-card-creation/v1.0.0/index.js"
+    ></script> -->
+
+    <script>
+      // Display current origin
+      document.getElementById('currentOrigin').textContent = window.location.origin;
+
+      /** Widget token management */
+      const externalCardCreation = document.getElementById('externalCardCreation');
+      let currentWidgetToken = externalCardCreation.getAttribute('token');
+
+      function updateWidgetToken(token) {
+        const externalCardCreation = document.getElementById('externalCardCreation');
+        if (externalCardCreation) {
+          externalCardCreation.setAttribute('token', token);
+          console.log('Widget token updated to:', token);
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const widgetTokenInput = document.getElementById('widgetToken');
+
+        if (widgetTokenInput) {
+          updateWidgetToken(widgetTokenInput.value);
+
+          widgetTokenInput.addEventListener('input', function (event) {
+            const token = event.target.value.trim();
+            if (token) {
+              currentWidgetToken = token;
+              updateWidgetToken(token);
+            }
+          });
+        }
+      });
+
+      /** MessageBus event listener */
+      function handleIframeMessage(event) {
+        const message = event.data;
+        
+        if (!message || typeof message !== 'object' || !message.type) {
+          return;
+        }
+        
+        if (
+          message.type &&
+          typeof message.timestamp === 'number' &&
+          message.data !== undefined
+        ) {
+          console.log('[MessageBus] Message received from iframe:', {
+            type: message.type,
+            timestamp: message.timestamp,
+            data: message.data,
+            origin: event.origin,
+            source: event.source
+          });
+        }
+      }
+
+      window.addEventListener('message', handleIframeMessage);
+    </script>
+  </body>
+</html>
+

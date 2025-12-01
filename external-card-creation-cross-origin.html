@@ -25,6 +25,7 @@
         padding: 15px;
         border: 1px solid #e1e5e9;
         border-radius: 8px;
+        background: #000;
       }
       .test-section h3 {
         margin-top: 0;
@@ -176,29 +177,29 @@
       });
 
       /** MessageBus event listener */
-      function handleIframeMessage(event) {
-        const message = event.data;
+    //   function handleIframeMessage(event) {
+    //     const message = event.data;
         
-        if (!message || typeof message !== 'object' || !message.type) {
-          return;
-        }
+    //     if (!message || typeof message !== 'object' || !message.type) {
+    //       return;
+    //     }
         
-        if (
-          message.type &&
-          typeof message.timestamp === 'number' &&
-          message.data !== undefined
-        ) {
-          console.log('[MessageBus] Message received from iframe:', {
-            type: message.type,
-            timestamp: message.timestamp,
-            data: message.data,
-            origin: event.origin,
-            source: event.source
-          });
-        }
-      }
+    //     if (
+    //       message.type &&
+    //       typeof message.timestamp === 'number' &&
+    //       message.data !== undefined
+    //     ) {
+    //       console.log('[MessageBus] Message received from iframe:', {
+    //         type: message.type,
+    //         timestamp: message.timestamp,
+    //         data: message.data,
+    //         origin: event.origin,
+    //         source: event.source
+    //       });
+    //     }
+    //   }
 
-      window.addEventListener('message', handleIframeMessage);
+    //   window.addEventListener('message', handleIframeMessage);
     </script>
   </body>
 </html>

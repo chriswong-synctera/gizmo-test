@@ -25,7 +25,6 @@
         padding: 15px;
         border: 1px solid #e1e5e9;
         border-radius: 8px;
-        background: #000;
       }
       .test-section h3 {
         margin-top: 0;
@@ -77,6 +76,57 @@
         border-color: #8b5cf6;
         box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
       }
+      .event-status {
+        margin-top: 20px;
+        padding: 16px;
+        border-radius: 8px;
+        display: none;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .event-status.show {
+        display: block;
+      }
+      .event-status.success {
+        background: #f0fdf4;
+        border: 2px solid #22c55e;
+        color: #166534;
+      }
+      .event-status.failure {
+        background: #fef2f2;
+        border: 2px solid #ef4444;
+        color: #991b1b;
+      }
+      .event-status h4 {
+        margin: 0 0 12px 0;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .event-detail {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 12px;
+        border-radius: 4px;
+        margin-top: 12px;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        font-size: 12px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .event-status.success .event-detail {
+        background: rgba(34, 197, 94, 0.1);
+      }
+      .event-status.failure .event-detail {
+        background: rgba(239, 68, 68, 0.1);
+      }
+      .event-label {
+        font-weight: 600;
+        margin-top: 8px;
+        display: block;
+      }
+      .event-label:first-child {
+        margin-top: 0;
+      }
     </style>
   </head>
   <body>
@@ -112,14 +162,27 @@
           3. Iframes will be loaded from assets-staging.synctera.com based on env
           4. This page can be served from ANY origin (localhost:8000, localhost:9000, etc.)
         -->
-        <!-- <external-card-creation
+        <external-card-creation
           id="externalCardCreation"
           token="test-token-123"
           includeAddress
           env="staging"
           theme="night-shift"
           custom-labels='{"widgetTitle":"External card","cardNameLabel":"Cardholder Name","cardNamePlaceholder":"Cardholder Name","expirationDateLabel":"Card Expiration Date","securityCodeLabel":"Card Security Code","cardExpPlaceholder":"MM/YY format","submitButtonText":"Use Card"}'
-        ></external-card-creation> -->
+        ></external-card-creation>
+      </div>
+
+      <div class="test-section">
+        <h3>Event Status</h3>
+        <p style="margin-top: 0; color: #666; font-size: 14px;">
+          This section shows events received from the widget via <strong>Custom DOM Events</strong>.
+          These events bubble up from the widget element and work cross-origin.
+        </p>
+        <div id="eventStatus" class="event-status">
+          <h4 id="eventTitle"></h4>
+          <div id="eventContent"></div>
+          <div class="event-detail" id="eventDetail"></div>
+        </div>
       </div>
     </div>
 
@@ -174,32 +237,138 @@
             }
           });
         }
+
+        // Wait for widget to be ready (it's loaded asynchronously)
+        const widget = document.getElementById('externalCardCreation');
+        if (widget) {
+          setupWidgetEventListeners(widget);
+        } else {
+          // Fallback: try again after a short delay
+          setTimeout(() => {
+            const widget = document.getElementById('externalCardCreation');
+            if (widget) {
+              setupWidgetEventListeners(widget);
+            }
+          }, 1000);
+        }
       });
 
-      /** MessageBus event listener */
-    //   function handleIframeMessage(event) {
-    //     const message = event.data;
-        
-    //     if (!message || typeof message !== 'object' || !message.type) {
-    //       return;
-    //     }
-        
-    //     if (
-    //       message.type &&
-    //       typeof message.timestamp === 'number' &&
-    //       message.data !== undefined
-    //     ) {
-    //       console.log('[MessageBus] Message received from iframe:', {
-    //         type: message.type,
-    //         timestamp: message.timestamp,
-    //         data: message.data,
-    //         origin: event.origin,
-    //         source: event.source
-    //       });
-    //     }
-    //   }
+      /**
+       * Setup event listeners for Custom DOM Events from the widget
+       * This is the RECOMMENDED way for external integrators to listen to widget events
+       */
+      function setupWidgetEventListeners(widget) {
+        console.log('✅ Setting up Custom DOM Event listeners on widget element');
 
-    //   window.addEventListener('message', handleIframeMessage);
+        // Success event - dispatched when card tokenization succeeds
+        widget.addEventListener('success', function (event) {
+          console.log('✅ SUCCESS EVENT RECEIVED (Custom DOM Event):', event);
+          console.log('Event detail:', event.detail);
+          console.log('Event target:', event.target);
+          console.log('Event type:', event.type);
+          console.log('This is a DOM event, NOT a postMessage!');
+
+          displayEventStatus('success', {
+            title: '✅ Card Tokenized Successfully',
+            content: event.detail.message || 'Card has been successfully tokenized.',
+            detail: {
+              external_card_id: event.detail.external_card_id,
+              message: event.detail.message,
+              cardData: {
+                name: event.detail.name,
+                pan: event.detail.pan, // Last 4 digits only
+                expiration_month: event.detail.expiration_month,
+                expiration_year: event.detail.expiration_year,
+                billing_address: event.detail.billing_address,
+              },
+            },
+          });
+
+          // Here you would typically:
+          // 1. Send external_card_id to your backend
+          // 2. Update your UI to show success
+          // 3. Redirect to next step or show confirmation
+        });
+
+        // Failure event - dispatched when card tokenization fails
+        widget.addEventListener('failure', function (event) {
+          console.error('❌ FAILURE EVENT RECEIVED (Custom DOM Event):', event);
+          console.error('Error:', event.detail.error);
+
+          displayEventStatus('failure', {
+            title: '❌ Tokenization Failed',
+            content: event.detail.error || 'An error occurred during tokenization.',
+            detail: {
+              error: event.detail.error,
+            },
+          });
+
+          // Here you would typically:
+          // 1. Show error message to user
+          // 2. Allow user to retry
+          // 3. Log error for debugging
+        });
+
+        console.log('✅ Event listeners attached. Waiting for widget events...');
+      }
+
+      /**
+       * Display event status in the UI
+       */
+      function displayEventStatus(type, data) {
+        const statusDiv = document.getElementById('eventStatus');
+        const titleEl = document.getElementById('eventTitle');
+        const contentEl = document.getElementById('eventContent');
+        const detailEl = document.getElementById('eventDetail');
+
+        if (!statusDiv || !titleEl || !contentEl || !detailEl) return;
+
+        // Update classes
+        statusDiv.className = `event-status ${type} show`;
+
+        // Update content
+        titleEl.textContent = data.title;
+        contentEl.textContent = data.content;
+        detailEl.textContent = JSON.stringify(data.detail, null, 2);
+
+        // Scroll into view
+        statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      /**
+       * DEBUG: PostMessage listener (for debugging internal widget communication)
+       * NOTE: External integrators should NOT use this - use Custom DOM Events instead!
+       * This is only here to show what's happening internally.
+       */
+      function handleIframeMessage(event) {
+        const message = event.data;
+
+        // Filter out non-widget messages (like React DevTools, browser extensions)
+        if (!message || typeof message !== 'object' || !message.type) {
+          return;
+        }
+
+        // Only log widget-related messages for debugging
+        if (
+          message.type &&
+          typeof message.timestamp === 'number' &&
+          message.data !== undefined
+        ) {
+          console.log('[DEBUG - PostMessage] Internal widget message:', {
+            type: message.type,
+            timestamp: message.timestamp,
+            data: message.data,
+            origin: event.origin,
+            source: event.source,
+          });
+          console.log(
+            '⚠️ NOTE: External integrators should use Custom DOM Events, not postMessage!'
+          );
+        }
+      }
+
+      // Add postMessage listener for debugging (optional)
+      window.addEventListener('message', handleIframeMessage);
     </script>
   </body>
 </html>

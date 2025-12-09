@@ -1,1016 +1,565 @@
 <!doctype html>
-
 <html lang="en">
-
   <head>
-
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Activate Card Widget - Cross-Origin Test</title>
-
     <style>
-
       body {
-
         font-family: Arial, sans-serif;
-
         padding: 20px;
-
         margin: 0;
-
         min-height: 100vh;
-
         background: #f5f5f5;
-
       }
 
       .test-container {
-
         max-width: 800px;
-
         margin: 0 auto;
-
         padding: 20px;
-
         background: white;
-
         border-radius: 8px;
-
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
       }
 
       .test-section {
-
         margin: 20px 0;
-
         padding: 15px;
-
         border: 1px solid #e1e5e9;
-
         border-radius: 8px;
-
         background: #fff;
-
       }
 
       .test-section h3 {
-
         margin-top: 0;
-
       }
 
       .info-box {
-
         background: #e3f2fd;
-
         border-left: 4px solid #2196f3;
-
         padding: 12px;
-
         margin: 20px 0;
-
         border-radius: 4px;
-
       }
 
       .info-box code {
-
         background: rgba(0, 0, 0, 0.05);
-
         padding: 2px 6px;
-
         border-radius: 3px;
-
         font-family: 'SF Mono', 'Monaco', monospace;
-
         font-size: 13px;
-
       }
 
       .token-config-container {
-
         display: flex;
-
         gap: 12px;
-
         align-items: center;
-
         margin-bottom: 12px;
-
       }
 
       .token-label {
-
         font-weight: 600;
-
         color: #2c3e50;
-
         font-size: 14px;
-
         min-width: 120px;
-
         margin: 0;
-
       }
 
       .token-input {
-
         flex: 1;
-
         padding: 12px 16px;
-
         border: 2px solid #e1e5e9;
-
         border-radius: 8px;
-
         background: #ffffff;
-
         color: #2c3e50;
-
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-
         font-size: 14px;
-
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
         transition: all 0.2s ease;
-
         outline: none;
-
         height: 44px;
-
         min-height: 44px;
-
         box-sizing: border-box;
-
       }
 
       .token-input:focus {
-
         border-color: #8b5cf6;
-
         box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-
       }
 
       .widget-container {
-
         display: flex;
-
         flex-direction: column;
-
         gap: 16px;
-
         margin-top: 20px;
-
       }
 
       .field-container {
-
         position: relative;
-
         display: flex;
-
         flex-direction: column;
-
       }
 
       .field-label {
-
         font-weight: 600;
-
         margin-bottom: 8px;
-
         color: #2c3e50;
-
         font-size: 14px;
-
       }
 
       .custom-styles {
-
         box-sizing: border-box;
-
         border: 1px solid #b7b7b7;
-
         width: 100%;
-
         height: 41px;
-
         border-radius: 4px;
-
         padding: 0 8px;
-
         font-family: Arial, sans-serif;
-
         font-size: 1rem;
-
         line-height: 1.4375em;
-
         font-weight: 400;
-
         color: rgba(0, 0, 0, 0.87);
-
         letter-spacing: 0.15px;
-
       }
 
       .custom-styles[_hover] {
-
         border: 1px solid #616161;
-
       }
 
       .custom-styles[_focus] {
-
         border: 2px solid #2564eb;
-
         padding: 0 7px;
-
       }
 
       .custom-styles[_disabled] {
-
         background: #d3d3d3;
-
       }
 
       .custom-styles[_user-invalid] {
-
         border-color: #e31b0c;
-
       }
 
       .submit-button {
-
         background-color: #1976d2;
-
         color: white;
-
         padding: 10px 20px;
-
         border: none;
-
         border-radius: 4px;
-
         font-size: 1rem;
-
         cursor: pointer;
-
         transition: background-color 0.3s;
-
         width: 100%;
-
         max-width: 300px;
-
         margin-top: 10px;
-
       }
 
       .submit-button:hover:not(:disabled) {
-
         background-color: #155fa9;
-
       }
 
       .submit-button:disabled {
-
         background-color: #d3d3d3;
-
         cursor: not-allowed;
-
       }
 
       .loader {
-
         display: none;
-
         width: 40px;
-
         height: 40px;
-
         margin: 10px auto;
-
       }
 
       .loader:after {
-
         content: ' ';
-
         display: block;
-
         width: 32px;
-
         height: 32px;
-
         margin: 4px;
-
         border-radius: 50%;
-
         border: 4px solid #000;
-
         border-color: #000 transparent #000 transparent;
-
         animation: lds-dual-ring 1.2s linear infinite;
-
       }
 
       @keyframes lds-dual-ring {
-
         0% {
-
           transform: rotate(0deg);
-
         }
-
         100% {
-
           transform: rotate(360deg);
-
         }
-
       }
 
       .event-status {
-
         margin-top: 20px;
-
         padding: 16px;
-
         border-radius: 8px;
-
         display: none;
-
         font-size: 14px;
-
         line-height: 1.6;
-
       }
 
       .event-status.show {
-
         display: block;
-
       }
 
       .event-status.success {
-
         background: #f0fdf4;
-
         border: 2px solid #22c55e;
-
         color: #166534;
-
       }
 
       .event-status.failure {
-
         background: #fef2f2;
-
         border: 2px solid #ef4444;
-
         color: #991b1b;
-
       }
 
       .event-status h4 {
-
         margin: 0 0 12px 0;
-
         font-size: 16px;
-
         font-weight: 600;
-
       }
 
       .event-detail {
-
         background: rgba(0, 0, 0, 0.05);
-
         padding: 12px;
-
         border-radius: 4px;
-
         margin-top: 12px;
-
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-
         font-size: 12px;
-
         overflow-x: auto;
-
         white-space: pre-wrap;
-
         word-break: break-all;
-
       }
 
       .event-status.success .event-detail {
-
         background: rgba(34, 197, 94, 0.1);
-
       }
 
       .event-status.failure .event-detail {
-
         background: rgba(239, 68, 68, 0.1);
-
       }
 
       .event-label {
-
         font-weight: 600;
-
         margin-top: 8px;
-
         display: block;
-
       }
 
       .event-label:first-child {
-
         margin-top: 0;
-
       }
-
     </style>
-
   </head>
-
   <body>
-
     <div class="test-container">
-
       <h1>Activate Card Widget - Cross-Origin Test</h1>
 
-
-
       <div class="info-box">
-
         <strong>🔍 Testing from separate origin</strong><br />
-
         This page loads the widget from <code>assets-staging.synctera.com</code> while being served from a different origin.<br />
-
         Current origin: <code id="currentOrigin"></code>
-
       </div>
 
-
-
       <div class="test-section">
-
         <h3>Widget Token Configuration</h3>
-
         <div class="token-config-container">
-
           <label for="widgetToken" class="token-label">Widget Token:</label>
-
           <input
-
             type="text"
-
             id="widgetToken"
-
             class="token-input"
-
             placeholder="Paste your widget token here"
-
             value="test-token-123"
-
           />
-
         </div>
-
       </div>
 
-
-
       <div class="test-section">
-
         <h3>Widget (loaded from staging bucket)</h3>
-
-        <!-- 
-
+        <!--
           Key points for cross-origin testing:
-
-          1. env="staging" - matches the environment where widget is deployed
-
+          1. environment="STAGING" - matches the environment where widget is deployed
           2. Widget JS is loaded from assets-staging.synctera.com (see script tag below)
-
           3. Iframes will be loaded from assets-staging.synctera.com based on env
-
           4. This page can be served from ANY origin (localhost:8000, localhost:9000, etc.)
-
         -->
-
         <div class="widget-container">
-
           <div class="field-container">
-
             <label class="field-label">Card PAN</label>
-
             <card-pan
-
               id="card-pan"
-
               token="test-token-123"
-
               class="custom-styles"
-
               environment="STAGING"
-
             ></card-pan>
-
           </div>
 
           <div class="field-container">
-
             <label class="field-label">Card CVV</label>
-
             <card-cvv
-
               id="card-cvv"
-
               class="custom-styles"
-
+              environment="STAGING"
             ></card-cvv>
-
           </div>
 
           <button id="submit-button" class="submit-button" disabled>Activate</button>
-
           <div id="loader" class="loader"></div>
-
         </div>
-
       </div>
-
-
 
       <div class="test-section">
-
         <h3>Event Status</h3>
-
         <p style="margin-top: 0; color: #666; font-size: 14px;">
-
           This section shows events received from the widget via <strong>Custom DOM Events</strong>.
-
           These events bubble up from the widget element and work cross-origin.
-
         </p>
-
         <div id="eventStatus" class="event-status">
-
           <h4 id="eventTitle"></h4>
-
           <div id="eventContent"></div>
-
           <div class="event-detail" id="eventDetail"></div>
-
         </div>
-
       </div>
-
     </div>
 
-
-
-    <!-- 
-
+    <!--
       Load widget from staging bucket (cross-origin)
-
       This demonstrates loading the widget from a different origin than where this HTML is served
-
     -->
-
     <script
-
       type="module"
-
       src="https://assets-staging.synctera.com/widgets/activate/v1.0.0/index.js"
-
     ></script>
 
-
-
     <!-- Alternative: Load from sandbox -->
-
     <!-- <script
-
       type="module"
-
       src="https://assets-sandbox.synctera.com/widgets/activate/v1.0.0/index.js"
-
     ></script> -->
-
-
 
     <!-- Alternative: Load from production -->
-
     <!-- <script
-
       type="module"
-
       src="https://assets.synctera.com/widgets/activate/v1.0.0/index.js"
-
     ></script> -->
 
-
-
     <script>
-
       // Display current origin
-
       document.getElementById('currentOrigin').textContent = window.location.origin;
 
-
-
       /** Widget token management */
-
       const cardPan = document.getElementById('card-pan');
-
       const cardCvv = document.getElementById('card-cvv');
-
       const submitButton = document.getElementById('submit-button');
-
       const loader = document.getElementById('loader');
-
       let currentWidgetToken = cardPan ? cardPan.getAttribute('token') : 'test-token-123';
 
-
-
       function updateWidgetToken(token) {
-
         const cardPan = document.getElementById('card-pan');
-
         if (cardPan) {
-
           cardPan.setAttribute('token', token);
-
           console.log('Widget token updated to:', token);
-
         }
-
       }
-
-
 
       document.addEventListener('DOMContentLoaded', function () {
-
         const widgetTokenInput = document.getElementById('widgetToken');
 
-
-
         if (widgetTokenInput) {
-
           updateWidgetToken(widgetTokenInput.value);
 
-
-
           widgetTokenInput.addEventListener('input', function (event) {
-
             const token = event.target.value.trim();
-
             if (token) {
-
               currentWidgetToken = token;
-
               updateWidgetToken(token);
-
             }
-
           });
-
         }
-
-
 
         // Wait for widget to be ready (it's loaded asynchronously)
-
-        const cardPanElement = document.getElementById('card-pan');
-
-        if (cardPanElement) {
-
-          setupWidgetEventListeners(cardPanElement);
-
-        } else {
-
-          // Fallback: try again after a short delay
-
-          setTimeout(() => {
-
-            const cardPanElement = document.getElementById('card-pan');
-
-            if (cardPanElement) {
-
-              setupWidgetEventListeners(cardPanElement);
-
-            }
-
-          }, 1000);
-
+        // The widget script loads asynchronously, so we need to wait for it
+        function setupWhenReady() {
+          const cardPanElement = document.getElementById('card-pan');
+          if (cardPanElement && customElements.get('card-pan')) {
+            console.log('Widget elements are ready');
+            setupWidgetEventListeners(cardPanElement);
+          } else {
+            // Widget script hasn't loaded yet, try again
+            console.log('Waiting for widget script to load...');
+            setTimeout(setupWhenReady, 100);
+          }
         }
 
+        // Start checking immediately
+        setupWhenReady();
+
+        // Also set up a fallback timeout
+        setTimeout(() => {
+          const cardPanElement = document.getElementById('card-pan');
+          if (cardPanElement) {
+            setupWidgetEventListeners(cardPanElement);
+          } else {
+            console.error('⚠️ Widget elements not found after timeout. Check if the widget script loaded correctly.');
+          }
+        }, 5000);
       });
 
-
-
       /**
-
        * Setup event listeners for Custom DOM Events from the widget
-
        * This is the RECOMMENDED way for external integrators to listen to widget events
-
        */
-
       function setupWidgetEventListeners(widget) {
-
         console.log('✅ Setting up Custom DOM Event listeners on widget element');
 
-
-
         // Load event - dispatched when widget is ready
-
         widget.addEventListener('load', function (event) {
-
           console.log('✅ LOAD EVENT RECEIVED (Custom DOM Event):', event);
-
+          // Ensure fields are enabled after widget loads
+          // The widget should enable fields automatically, but we can verify
+          console.log('Widget loaded. Checking field states...');
+          console.log('Card PAN disabled attribute:', widget.hasAttribute('_disabled'));
+          const cardCvvElement = document.getElementById('card-cvv');
+          if (cardCvvElement) {
+            console.log('Card CVV disabled attribute:', cardCvvElement.hasAttribute('_disabled'));
+          }
         });
-
-
 
         // Validity event - dispatched when validation state changes
-
         widget.addEventListener('validity', function (event) {
-
           const isValid = event.target.isValid;
-
           console.log('✅ VALIDITY EVENT RECEIVED (Custom DOM Event):', { isValid });
-
           if (submitButton) {
-
             submitButton.disabled = !isValid;
-
           }
-
         });
-
-
 
         // Success event - dispatched when card activation succeeds
-
         widget.addEventListener('success', function (event) {
-
           console.log('✅ SUCCESS EVENT RECEIVED (Custom DOM Event):', event);
-
           console.log('Event detail:', event.detail);
-
           console.log('Event target:', event.target);
-
           console.log('Event type:', event.type);
-
           console.log('This is a DOM event, NOT a postMessage!');
 
-
-
           if (loader) loader.style.display = 'none';
-
           if (submitButton) submitButton.style.display = 'block';
-
-
 
           displayEventStatus('success', {
-
             title: '✅ Card Activated Successfully',
-
             content: 'Card has been successfully activated.',
-
             detail: event.detail || {},
-
           });
 
-
-
           // Here you would typically:
-
           // 1. Update your UI to show success
-
           // 2. Redirect to next step or show confirmation
-
         });
-
-
 
         // Failure event - dispatched when card activation fails
-
         widget.addEventListener('failure', function (event) {
-
           console.error('❌ FAILURE EVENT RECEIVED (Custom DOM Event):', event);
-
           console.error('Error:', event.target.error);
 
-
-
           if (loader) loader.style.display = 'none';
-
           if (submitButton) submitButton.style.display = 'block';
 
-
-
           const error = event.target.error || {};
-
           displayEventStatus('failure', {
-
             title: '❌ Activation Failed',
-
             content: error.error?.detail || error.message || 'An error occurred during activation.',
-
             detail: {
-
               error: error.error || error,
-
             },
-
           });
 
-
-
           // Here you would typically:
-
           // 1. Show error message to user
-
           // 2. Allow user to retry
-
           // 3. Log error for debugging
-
         });
-
-
 
         console.log('✅ Event listeners attached. Waiting for widget events...');
-
       }
-
-
 
       // Submit button handler
-
       if (submitButton) {
-
         submitButton.addEventListener('click', function () {
-
           const cardPanElement = document.getElementById('card-pan');
-
           if (cardPanElement) {
-
             loader.style.display = 'block';
-
             submitButton.style.display = 'none';
 
-
-
             try {
-
               cardPanElement.submit();
-
             } catch (e) {
-
               console.error('Card failed to activate', e);
-
               loader.style.display = 'none';
-
               submitButton.style.display = 'block';
-
             }
-
           }
-
         });
-
       }
 
-
-
       /**
-
        * Display event status in the UI
-
        */
-
       function displayEventStatus(type, data) {
-
         const statusDiv = document.getElementById('eventStatus');
-
         const titleEl = document.getElementById('eventTitle');
-
         const contentEl = document.getElementById('eventContent');
-
         const detailEl = document.getElementById('eventDetail');
-
-
 
         if (!statusDiv || !titleEl || !contentEl || !detailEl) return;
 
-
-
         // Update classes
-
         statusDiv.className = `event-status ${type} show`;
 
-
-
         // Update content
-
         titleEl.textContent = data.title;
-
         contentEl.textContent = data.content;
-
         detailEl.textContent = JSON.stringify(data.detail, null, 2);
 
-
-
         // Scroll into view
-
         statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
       }
-
-
 
       /**
-
        * DEBUG: PostMessage listener (for debugging internal widget communication)
-
        * NOTE: External integrators should NOT use this - use Custom DOM Events instead!
-
        * This is only here to show what's happening internally.
-
        */
-
       function handleIframeMessage(event) {
-
         const message = event.data;
 
-
-
         // Filter out non-widget messages (like React DevTools, browser extensions)
-
         if (!message || typeof message !== 'object' || !message.type) {
-
           return;
-
         }
-
-
 
         // Only log widget-related messages for debugging
-
         if (
-
           message.type &&
-
           typeof message.timestamp === 'number' &&
-
           message.data !== undefined
-
         ) {
-
           console.log('[DEBUG - PostMessage] Internal widget message:', {
-
             type: message.type,
-
             timestamp: message.timestamp,
-
             data: message.data,
-
             origin: event.origin,
-
             source: event.source,
-
           });
-
           console.log(
-
             '⚠️ NOTE: External integrators should use Custom DOM Events, not postMessage!'
-
           );
-
         }
-
       }
 
-
-
       // Add postMessage listener for debugging (optional)
-
       window.addEventListener('message', handleIframeMessage);
-
     </script>
-
   </body>
-
 </html>
-

@@ -261,7 +261,18 @@
         eventLog.prepend(entry);
       }
 
+      // onLoad property callback (smoke test)
+      widget.onLoad = (e) => {
+        logEvent('onLoad callback', `instanceId=${e.detail.instanceId}, timedOut=${e.detail.timedOut}`);
+      };
+
       // Widget event listeners
+      widget.addEventListener('load', (e) => {
+        const { timedOut } = e.detail;
+        logEvent('load', timedOut ? 'Widget ready (timed out)' : 'Widget ready');
+        console.log('Load:', e.detail);
+      });
+
       widget.addEventListener('success', (e) => {
         logEvent('success', 'PIN set successfully!');
         console.log('Success:', e.detail);

@@ -1,313 +1,193 @@
+<!-- EXAMPLE HTML: Showing how to use the <set-pin> component -->
+<!-- This won't be used in prod by any partner, but is used for development and testing -->
+
 <!doctype html>
+
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Set PIN Widget - Cross-Origin Test</title>
+    <title>Set PIN Widget</title>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon" />
+    <script
+      data-dev-only
+      src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
+    ></script>
+    <script data-dev-only src="../node_modules/lit/polyfill-support.js"></script>
+    <script type="module" src="/packages/widgets/build/set-pin/index.js"></script>
     <style>
       body {
         font-family: Arial, sans-serif;
-        padding: 20px;
+        padding: 0;
         margin: 0;
         min-height: 100vh;
         background: #f5f5f5;
       }
 
       .test-container {
-        max-width: 800px;
+        max-width: 600px;
         margin: 0 auto;
         padding: 20px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
       .test-section {
         margin: 20px 0;
-        padding: 15px;
-        border: 1px solid #e1e5e9;
-        border-radius: 8px;
-        background: #fff;
+        padding: 20px;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       }
 
       .test-section h3 {
         margin-top: 0;
+        color: #1f2937;
       }
 
-      .info-box {
-        background: #e3f2fd;
-        border-left: 4px solid #2196f3;
-        padding: 12px;
-        margin: 20px 0;
-        border-radius: 4px;
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
       }
 
-      .info-box code {
-        background: rgba(0, 0, 0, 0.05);
-        padding: 2px 6px;
-        border-radius: 3px;
-        font-family: 'SF Mono', 'Monaco', monospace;
-        font-size: 13px;
+      .back-link:hover {
+        text-decoration: underline;
+        color: #2563eb;
       }
 
+      h1 {
+        color: #1f2937;
+        margin-bottom: 10px;
+      }
+
+      .description {
+        color: #6b7280;
+        margin-bottom: 20px;
+      }
+
+      /* Token configuration styles */
       .token-config-container {
         display: flex;
-        gap: 12px;
-        align-items: center;
+        flex-direction: column;
+        gap: 8px;
         margin-bottom: 12px;
       }
 
       .token-label {
         font-weight: 600;
-        color: #2c3e50;
+        color: #374151;
         font-size: 14px;
-        min-width: 120px;
-        margin: 0;
       }
 
       .token-input {
-        flex: 1;
         padding: 12px 16px;
-        border: 2px solid #e1e5e9;
+        border: 2px solid #e5e7eb;
         border-radius: 8px;
         background: #ffffff;
-        color: #2c3e50;
+        color: #1f2937;
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
         font-size: 14px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: all 0.2s ease;
         outline: none;
-        height: 44px;
-        min-height: 44px;
-        box-sizing: border-box;
       }
 
       .token-input:focus {
-        border-color: #8b5cf6;
-        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
       }
 
-      .widget-container {
+      .theme-selector {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        margin-top: 20px;
-        min-width: 320px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 1rem;
-      }
-
-      .widget-header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .widget-header-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 0;
-      }
-
-      .widget-header-subtitle {
-        font-size: 1rem;
-        margin: 0;
-      }
-
-      .field-container {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-      }
-
-      .field-label {
-        font-weight: bold;
-        margin-bottom: 5px;
-        font-family: 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto',
-          'Helvetica Neue', 'Arial', sans-serif;
-        font-weight: 500;
-      }
-
-      .custom-styles {
-        box-sizing: border-box;
-        border: 1px solid #ddd;
-        min-width: 240px;
-        width: 100%;
-        height: 40px;
-        border-radius: 4px;
-        padding: 0 8px;
-        font-family: 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto',
-          'Helvetica Neue', 'Arial', sans-serif;
-        font-size: 1rem;
-        line-height: 1.625em;
-        font-weight: 400;
-        color: rgba(0, 0, 0, 0.87);
-      }
-
-      .custom-styles[_hover] {
-        border: 1px solid #616161;
-      }
-
-      .custom-styles[_focus] {
-        border: 2px solid #2564eb;
-        padding: 0 7px;
-      }
-
-      .custom-styles[_disabled] {
-        background: #d3d3d3;
-      }
-
-      .custom-styles[_user-invalid] {
-        border-color: #e31b0c;
-      }
-
-      .input-error {
-        color: #e31b0c;
-        font-size: 0.8rem;
-        margin-top: 4px;
-        display: none;
-      }
-
-      .input-error.show {
-        display: block;
-      }
-
-      .button-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        gap: 1rem;
-      }
-
-      .submit-button {
-        background-color: #1976d2;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.3s;
-        width: 100%;
-      }
-
-      .submit-button:hover:not(:disabled) {
-        background-color: #155fa9;
-      }
-
-      .submit-button:active:not(:disabled) {
-        transform: scale(0.97);
-        transition: transform 0.1s ease-in-out;
-      }
-
-      .submit-button:disabled {
-        background-color: #d3d3d3;
-        cursor: not-allowed;
-      }
-
-      .cancel-button {
-        background-color: #fff;
-        color: #333;
-        padding: 10px 20px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.3s;
-        width: 100%;
-      }
-
-      .cancel-button:hover {
-        background-color: #e0e0e0;
-      }
-
-      .cancel-button:active {
-        transform: scale(0.97);
-        transition: transform 0.1s ease-in-out;
-      }
-
-      .event-status {
-        margin-top: 20px;
-        padding: 16px;
-        border-radius: 8px;
-        display: none;
-        font-size: 14px;
-        line-height: 1.6;
-      }
-
-      .event-status.show {
-        display: block;
-      }
-
-      .event-status.success {
-        background: #f0fdf4;
-        border: 2px solid #22c55e;
-        color: #166534;
-      }
-
-      .event-status.failure {
-        background: #fef2f2;
-        border: 2px solid #ef4444;
-        color: #991b1b;
-      }
-
-      .event-status h4 {
-        margin: 0 0 12px 0;
-        font-size: 16px;
-        font-weight: 600;
-      }
-
-      .event-detail {
-        background: rgba(0, 0, 0, 0.05);
-        padding: 12px;
-        border-radius: 4px;
+        gap: 8px;
         margin-top: 12px;
+      }
+
+      .theme-btn {
+        padding: 8px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .theme-btn:hover {
+        border-color: #3b82f6;
+      }
+
+      .theme-btn.active {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        color: #3b82f6;
+      }
+
+      /* Widget container */
+      .widget-container {
+        margin-top: 16px;
+      }
+
+      /* Event log styles */
+      .event-log {
+        margin-top: 16px;
+        padding: 12px;
+        background: #f9fafb;
+        border-radius: 8px;
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
         font-size: 12px;
-        overflow-x: auto;
-        white-space: pre-wrap;
-        word-break: break-all;
+        max-height: 200px;
+        overflow-y: auto;
       }
 
-      .event-status.success .event-detail {
-        background: rgba(34, 197, 94, 0.1);
+      .event-log-entry {
+        padding: 4px 0;
+        border-bottom: 1px solid #e5e7eb;
       }
 
-      .event-status.failure .event-detail {
-        background: rgba(239, 68, 68, 0.1);
+      .event-log-entry:last-child {
+        border-bottom: none;
       }
 
-      .event-label {
+      .event-log-time {
+        color: #6b7280;
+      }
+
+      .event-log-type {
+        color: #3b82f6;
         font-weight: 600;
-        margin-top: 8px;
-        display: block;
       }
 
-      .event-label:first-child {
-        margin-top: 0;
+      .event-log-success {
+        color: #10b981;
+      }
+
+      .event-log-failure {
+        color: #ef4444;
+      }
+
+      /* Night shift theme preview */
+      .night-shift-preview {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 20px;
+        border-radius: 12px;
       }
     </style>
   </head>
 
   <body>
     <div class="test-container">
-      <h1>Set PIN Widget - Cross-Origin Test</h1>
+      <a href="../index.html" class="back-link">← Back to Widget Index</a>
 
-      <div class="info-box">
-        <strong>🔍 Testing from separate origin</strong><br />
-        This page loads the widget from <code>assets-staging.synctera.com</code> while being served
-        from a different origin.<br />
-        Current origin: <code id="currentOrigin"></code>
-      </div>
+      <h1>Set PIN Widget</h1>
+      <p class="description">
+        The new consolidated Set PIN widget using the MessageBus/IframeManager architecture. This
+        widget provides a complete PIN entry form with validation and PIN match checking.
+      </p>
 
       <div class="test-section">
-        <h3>Widget Token Configuration</h3>
+        <h3>Configuration</h3>
         <div class="token-config-container">
           <label for="widgetToken" class="token-label">Widget Token:</label>
           <input
@@ -318,294 +198,123 @@
             value="test-token-123"
           />
         </div>
-      </div>
 
-      <div class="test-section">
-        <h3>Widget (loaded from staging bucket)</h3>
-        <!--
-          Key points for cross-origin testing:
-          1. env="staging" - matches the environment where widget is deployed
-          2. Widget JS is loaded from assets-staging.synctera.com (see script tag below)
-          3. Iframes will be loaded from assets-staging.synctera.com based on env
-          4. This page can be served from ANY origin (localhost:8000, localhost:9000, etc.)
-        -->
-        <div class="widget-container">
-          <div class="widget-header">
-            <h2 class="widget-header-title">Set Pin</h2>
-            <h4 class="widget-header-subtitle">Enter your 4-digit card PIN</h4>
-          </div>
-          <div class="field-container">
-            <label class="field-label">New PIN</label>
-            <set-pin
-              id="set-pin-controller"
-              class="custom-styles"
-              token="test-token-123"
-              environment="STAGING"
-            ></set-pin>
-            <div id="set-pin-error" class="input-error">PIN must be 4 digits</div>
-          </div>
-          <div class="field-container">
-            <label class="field-label">Confirm new PIN</label>
-            <set-pin id="set-pin-confirm" class="custom-styles" isConfirm></set-pin>
-            <div id="set-pin-confirm-error" class="input-error">PINs must Match</div>
-          </div>
-          <div class="button-container">
-            <button id="set-pin-cancel-button" class="cancel-button">Cancel</button>
-            <button id="set-pin-submit-button" class="submit-button" disabled>Submit</button>
-          </div>
+        <div class="token-label" style="margin-top: 12px">Theme:</div>
+        <div class="theme-selector">
+          <button class="theme-btn active" data-theme="default">Default</button>
+          <button class="theme-btn" data-theme="night-shift">Night Shift</button>
         </div>
       </div>
 
       <div class="test-section">
-        <h3>Event Status</h3>
-        <p style="margin-top: 0; color: #666; font-size: 14px">
-          This section shows events received from the widget via <strong>Custom DOM Events</strong>.
-          These events bubble up from the widget element and work cross-origin.
-        </p>
-        <div id="eventStatus" class="event-status">
-          <h4 id="eventTitle"></h4>
-          <div id="eventContent"></div>
-          <div class="event-detail" id="eventDetail"></div>
+        <h3>Widget Demo</h3>
+        <div id="widget-container" class="widget-container">
+          <set-pin
+            id="set-pin"
+            token="test-token-123"
+            env="dev"
+            theme="default"
+          ></set-pin>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>Event Log</h3>
+        <div id="event-log" class="event-log">
+          <div class="event-log-entry">
+            <span class="event-log-time">--:--:--</span>
+            <span class="event-log-type">Waiting for events...</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!--
-      Load widget from staging bucket (cross-origin)
-      This demonstrates loading the widget from a different origin than where this HTML is served
-    -->
-    <script
-      type="module"
-      src="https://assets-staging.synctera.com/widgets/set-pin/v1.0.0/index.js"
-    ></script>
-
-    <!-- Alternative: Load from sandbox -->
-    <!-- <script
-      type="module"
-      src="https://assets-sandbox.synctera.com/widgets/set-pin/v1.0.0/index.js"
-    ></script> -->
-
-    <!-- Alternative: Load from production -->
-    <!-- <script
-      type="module"
-      src="https://assets.synctera.com/widgets/set-pin/v1.0.0/index.js"
-    ></script> -->
-
     <script>
-      // Display current origin
-      document.getElementById('currentOrigin').textContent = window.location.origin;
+      const widget = document.getElementById('set-pin');
+      const widgetContainer = document.getElementById('widget-container');
+      const eventLog = document.getElementById('event-log');
+      const widgetTokenInput = document.getElementById('widgetToken');
+      const themeButtons = document.querySelectorAll('.theme-btn');
 
-      /** Widget token management */
-      const setPinController = document.getElementById('set-pin-controller');
-      const setPinConfirm = document.getElementById('set-pin-confirm');
-      const setPinError = document.getElementById('set-pin-error');
-      const setPinConfirmError = document.getElementById('set-pin-confirm-error');
-      const setPinSubmit = document.getElementById('set-pin-submit-button');
-      const setPinCancel = document.getElementById('set-pin-cancel-button');
-      let currentWidgetToken = setPinController
-        ? setPinController.getAttribute('token')
-        : 'test-token-123';
-      let setPinValid = false;
+      // Event logging function
+      function logEvent(type, detail = '') {
+        const time = new Date().toLocaleTimeString();
+        const entry = document.createElement('div');
+        entry.className = 'event-log-entry';
 
-      function updateWidgetToken(token) {
-        const setPinController = document.getElementById('set-pin-controller');
-        if (setPinController) {
-          setPinController.setAttribute('token', token);
-          console.log('Widget token updated to:', token);
+        let typeClass = 'event-log-type';
+        if (type.includes('success')) typeClass = 'event-log-success';
+        if (type.includes('failure') || type.includes('error')) typeClass = 'event-log-failure';
+
+        entry.innerHTML = `
+          <span class="event-log-time">${time}</span>
+          <span class="${typeClass}">${type}</span>
+          ${detail ? `<span> - ${detail}</span>` : ''}
+        `;
+
+        // Remove "waiting" message if it exists
+        const waiting = eventLog.querySelector('.event-log-entry');
+        if (waiting && waiting.textContent.includes('Waiting')) {
+          waiting.remove();
         }
+
+        eventLog.prepend(entry);
       }
 
-      document.addEventListener('DOMContentLoaded', function () {
-        const widgetTokenInput = document.getElementById('widgetToken');
+      // Widget event listeners
+      widget.addEventListener('success', (e) => {
+        logEvent('success', 'PIN set successfully!');
+        console.log('Success:', e.detail);
+      });
 
-        if (widgetTokenInput) {
-          updateWidgetToken(widgetTokenInput.value);
+      widget.addEventListener('failure', (e) => {
+        logEvent('failure', e.detail?.error || 'Unknown error');
+        console.log('Failure:', e.detail);
+      });
 
-          widgetTokenInput.addEventListener('input', function (event) {
-            const token = event.target.value.trim();
-            if (token) {
-              currentWidgetToken = token;
-              updateWidgetToken(token);
-            }
-          });
-        }
+      widget.addEventListener('field-ready', (e) => {
+        logEvent('field-ready', e.detail?.fieldType);
+      });
 
-        // Wait for widget to be ready (it's loaded asynchronously)
-        const setPinElement = document.getElementById('set-pin-controller');
-        if (setPinElement) {
-          setupWidgetEventListeners(setPinElement);
-        } else {
-          // Fallback: try again after a short delay
-          setTimeout(() => {
-            const setPinElement = document.getElementById('set-pin-controller');
-            if (setPinElement) {
-              setupWidgetEventListeners(setPinElement);
-            }
-          }, 1000);
+      widget.addEventListener('field-validity-changed', (e) => {
+        const { fieldType, isValid } = e.detail;
+        logEvent('validity-changed', `${fieldType}: ${isValid ? 'valid' : 'invalid'}`);
+      });
+
+      // Token input handler
+      widgetTokenInput.addEventListener('input', (e) => {
+        const token = e.target.value.trim();
+        if (token) {
+          widget.setAttribute('token', token);
+          logEvent('token-updated', token.substring(0, 20) + '...');
         }
       });
 
-      /**
-       * Setup event listeners for Custom DOM Events from the widget
-       * This is the RECOMMENDED way for external integrators to listen to widget events
-       */
-      function setupWidgetEventListeners(widget) {
-        console.log('✅ Setting up Custom DOM Event listeners on widget element');
+      // Theme switcher
+      themeButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const theme = btn.dataset.theme;
 
-        // Load event - dispatched when widget is ready
-        widget.addEventListener('load', function (event) {
-          console.log('✅ LOAD EVENT RECEIVED (Custom DOM Event):', event);
-        });
+          // Update active state
+          themeButtons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
 
-        // Validity event - dispatched when validation state changes
-        widget.addEventListener('validity', function (event) {
-          setPinValid = event.target.isValid;
-          console.log('✅ VALIDITY EVENT RECEIVED (Custom DOM Event):', { isValid: setPinValid });
+          // Update widget theme
+          widget.setAttribute('theme', theme);
 
-          if (setPinSubmit) {
-            setPinSubmit.disabled = !setPinValid;
-          }
-
-          // Update validation warnings
-          if (setPinValid) {
-            if (setPinError) setPinError.classList.remove('show');
-            if (setPinConfirmError) setPinConfirmError.classList.remove('show');
+          // Update container background for night-shift
+          if (theme === 'night-shift') {
+            widgetContainer.classList.add('night-shift-preview');
           } else {
-            const setPinConfirmElement = document.getElementById('set-pin-confirm');
-            if (setPinConfirmElement && setPinConfirmElement.hasAttribute('_user-invalid')) {
-              if (setPinConfirmError) setPinConfirmError.classList.add('show');
-            } else {
-              if (setPinConfirmError) setPinConfirmError.classList.remove('show');
-            }
-            if (widget.hasAttribute('_user-invalid')) {
-              if (setPinError) setPinError.classList.add('show');
-            } else {
-              if (setPinError) setPinError.classList.remove('show');
-            }
+            widgetContainer.classList.remove('night-shift-preview');
           }
+
+          logEvent('theme-changed', theme);
         });
+      });
 
-        // Success event - dispatched when PIN is set successfully
-        widget.addEventListener('success', function (event) {
-          console.log('✅ SUCCESS EVENT RECEIVED (Custom DOM Event):', event);
-          console.log('Event detail:', event.detail);
-          console.log('Event target:', event.target);
-          console.log('Event type:', event.type);
-          console.log('This is a DOM event, NOT a postMessage!');
-
-          displayEventStatus('success', {
-            title: '✅ PIN Set Successfully',
-            content: 'PIN has been successfully set.',
-            detail: event.detail || {},
-          });
-
-          // Here you would typically:
-          // 1. Update your UI to show success
-          // 2. Redirect to next step or show confirmation
-        });
-
-        // Failure event - dispatched when PIN setting fails
-        widget.addEventListener('failure', function (event) {
-          console.error('❌ FAILURE EVENT RECEIVED (Custom DOM Event):', event);
-          console.error('Error:', event.target.error);
-
-          const error = event.target.error || {};
-          displayEventStatus('failure', {
-            title: '❌ PIN Setting Failed',
-            content:
-              error.error?.detail || error.message || 'An error occurred while setting the PIN.',
-            detail: {
-              error: error.error || error,
-            },
-          });
-
-          // Here you would typically:
-          // 1. Show error message to user
-          // 2. Allow user to retry
-          // 3. Log error for debugging
-        });
-
-        console.log('✅ Event listeners attached. Waiting for widget events...');
-      }
-
-      // Submit button handler
-      if (setPinSubmit) {
-        setPinSubmit.addEventListener('click', function () {
-          const setPinElement = document.getElementById('set-pin-controller');
-          if (setPinElement) {
-            try {
-              setPinElement.submit();
-            } catch (e) {
-              console.error('PIN failed to submit', e);
-            }
-          }
-        });
-      }
-
-      // Cancel button handler
-      if (setPinCancel) {
-        setPinCancel.addEventListener('click', function () {
-          console.log('Cancel button clicked');
-          // Here you would typically:
-          // 1. Reset the form
-          // 2. Navigate away or close the widget
-        });
-      }
-
-      /**
-       * Display event status in the UI
-       */
-      function displayEventStatus(type, data) {
-        const statusDiv = document.getElementById('eventStatus');
-        const titleEl = document.getElementById('eventTitle');
-        const contentEl = document.getElementById('eventContent');
-        const detailEl = document.getElementById('eventDetail');
-
-        if (!statusDiv || !titleEl || !contentEl || !detailEl) return;
-
-        // Update classes
-        statusDiv.className = `event-status ${type} show`;
-
-        // Update content
-        titleEl.textContent = data.title;
-        contentEl.textContent = data.content;
-        detailEl.textContent = JSON.stringify(data.detail, null, 2);
-
-        // Scroll into view
-        statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-
-      /**
-       * DEBUG: PostMessage listener (for debugging internal widget communication)
-       * NOTE: External integrators should NOT use this - use Custom DOM Events instead!
-       * This is only here to show what's happening internally.
-       */
-      function handleIframeMessage(event) {
-        const message = event.data;
-
-        // Filter out non-widget messages (like React DevTools, browser extensions)
-        if (!message || typeof message !== 'object' || !message.type) {
-          return;
-        }
-
-        // Only log widget-related messages for debugging
-        if (message.type && typeof message.timestamp === 'number' && message.data !== undefined) {
-          console.log('[DEBUG - PostMessage] Internal widget message:', {
-            type: message.type,
-            timestamp: message.timestamp,
-            data: message.data,
-            origin: event.origin,
-            source: event.source,
-          });
-          console.log(
-            '⚠️ NOTE: External integrators should use Custom DOM Events, not postMessage!'
-          );
-        }
-      }
-
-      // Add postMessage listener for debugging (optional)
-      window.addEventListener('message', handleIframeMessage);
+      // Initial log
+      logEvent('initialized', 'Set PIN widget loaded');
     </script>
   </body>
 </html>
-

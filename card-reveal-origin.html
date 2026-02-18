@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Reveal – Standalone Test</title>
+    <!-- Single self-contained bundle from GCS (no polyfills needed) -->
+    <script type="module" src="https://assets-staging.synctera.com/widgets/card-reveal/v1.0.0/index.js"></script>
+  </head>
+  <body>
+    <card-reveal-widget
+      token="YOUR_WIDGET_TOKEN"
+      env="staging"
+      theme="default"
+      card-side="front"
+      card-form="physical"
+      card-type="DEBIT"
+      last-four="4242"
+      emboss-name="JOHN DOE"
+      card-network="visa"
+      show-toggle
+      toggle-label="Reveal Card Details"
+    ></card-reveal-widget>
+  </body>
+</html>

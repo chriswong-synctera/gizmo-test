@@ -9,7 +9,7 @@
       Point this at the real deployed GCS bundle to test CORS.
       No polyfills needed — the bundle is fully self-contained.
     -->
-    <script type="module" src="https://assets-staging.synctera.com/widgets/card-reveal/v1.0.0/index.js"></script>
+    <script type="module" src="https://assets-staging.synctera.com/widgets/reveal-card/v1.1.0/index.js"></script>
     <style>
       * { box-sizing: border-box; }
       body {
@@ -165,7 +165,7 @@
       <div class="card">
         <h3>Widget</h3>
         <div class="widget-area" id="widgetArea">
-          <card-reveal-widget
+          <reveal-card
             id="widget"
             token=""
             env="dev"
@@ -178,7 +178,8 @@
             card-network="visa"
             show-toggle
             toggle-label="Reveal Card Details"
-          ></card-reveal-widget>
+            styles='{"cardBackground":"#1e3a5f","cardTextColor":"#000","cardBorderRadius":"16px","labelColor":"#94a3b8","primaryColor":"#3b82f6"}'
+          ></reveal-card>
         </div>
         <div class="btn-row">
           <button class="btn btn-primary" id="flipBtn">Flip Card</button>

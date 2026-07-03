@@ -1,0 +1,417 @@
+<!-- EXAMPLE HTML: Showing how to use the <reveal-pin> component -->
+<!-- This won't be used in prod by any partner, but is used for development and testing -->
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reveal PIN Widget</title>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon" />
+    <script
+      data-dev-only
+      src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
+    ></script>
+    <script type="module" src="https://assets-staging.synctera.com/widgets/reveal-pin/v1.0.0/index.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+        background: #f5f5f5;
+      }
+
+      .test-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .test-section {
+        margin: 20px 0;
+        padding: 20px;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .test-section h3 {
+        margin-top: 0;
+        color: #1f2937;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+        color: #2563eb;
+      }
+
+      h1 {
+        color: #1f2937;
+        margin-bottom: 10px;
+      }
+
+      .description {
+        color: #6b7280;
+        margin-bottom: 20px;
+      }
+
+      .token-config-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .token-label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+      }
+
+      .token-input {
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1f2937;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        outline: none;
+      }
+
+      .token-input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .theme-selector {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .theme-btn {
+        padding: 8px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .theme-btn:hover {
+        border-color: #3b82f6;
+      }
+
+      .theme-btn.active {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        color: #3b82f6;
+      }
+
+      .widget-container {
+        margin-top: 16px;
+      }
+
+      .event-log {
+        margin-top: 16px;
+        padding: 12px;
+        background: #f9fafb;
+        border-radius: 8px;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        font-size: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .event-log-entry {
+        padding: 4px 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .event-log-entry:last-child {
+        border-bottom: none;
+      }
+
+      .event-log-time {
+        color: #6b7280;
+      }
+
+      .event-log-type {
+        color: #3b82f6;
+        font-weight: 600;
+      }
+
+      .event-log-success {
+        color: #10b981;
+      }
+
+      .event-log-failure {
+        color: #ef4444;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        background: #3b82f6;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .action-btn:hover {
+        background: #2563eb;
+      }
+
+      .action-btn.secondary {
+        background: #6b7280;
+      }
+
+      .action-btn.secondary:hover {
+        background: #4b5563;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="test-container">
+      <a href="../index.html" class="back-link">← Back to Widget Index</a>
+
+      <h1>Reveal PIN Widget</h1>
+      <p class="description">
+        The reveal-pin widget securely reveals a card PIN using a widget token. The PIN is fetched,
+        rendered, and auto-hidden entirely within a Synctera-origin iframe and never reaches the
+        parent page.
+      </p>
+
+      <div class="test-section">
+        <h3>Configuration</h3>
+        <div class="token-config-container">
+          <label for="widgetToken" class="token-label">Widget Token:</label>
+          <input
+            type="text"
+            id="widgetToken"
+            class="token-input"
+            placeholder="Paste your widget token here (from GET /v2/cards/{card_id}/widget_token?widget_type=GET_PIN)"
+            value="test-token-123"
+          />
+        </div>
+
+        <div class="token-label" style="margin-top: 12px">Theme:</div>
+        <div class="theme-selector">
+          <button class="theme-btn active" data-theme="default">Default</button>
+          <button class="theme-btn" data-theme="night-shift">Night Shift</button>
+        </div>
+
+        <div class="token-label" style="margin-top: 12px">Auto-hide:</div>
+        <div class="theme-selector">
+          <button class="theme-btn active" data-autohide="5">5s</button>
+          <button class="theme-btn" data-autohide="10">10s</button>
+          <button class="theme-btn" data-autohide="0">Off</button>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>Widget Demo (Self-Contained with Show PIN button)</h3>
+        <p style="color: #6b7280; font-size: 14px; margin: 0 0 16px 0">
+          This widget includes a built-in "Show PIN" button. The PIN auto-hides after the configured
+          number of seconds (default 5s).
+        </p>
+        <div
+          id="widget-container"
+          class="widget-container"
+          style="display: flex; justify-content: center"
+        >
+          <reveal-pin
+            id="reveal-pin-widget"
+            token="test-token-123"
+            env="dev"
+            theme="default"
+            auto-hide-seconds="5"
+            show-toggle
+            toggle-label="Show PIN"
+            style="max-width: 320px"
+          ></reveal-pin>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>Widget Demo (External Control)</h3>
+        <p style="color: #6b7280; font-size: 14px; margin: 0 0 16px 0">
+          This widget hides the built-in button. Trigger the reveal with
+          <code>requestPin()</code> via the buttons below.
+        </p>
+        <div class="widget-container" style="display: flex; justify-content: center">
+          <reveal-pin
+            id="reveal-pin-widget-external"
+            token="test-token-123"
+            env="dev"
+            theme="default"
+            auto-hide-seconds="5"
+            style="max-width: 320px"
+          ></reveal-pin>
+        </div>
+        <div class="action-buttons" style="justify-content: center; margin-top: 12px">
+          <button class="action-btn" id="revealBtnExternal">Show PIN</button>
+          <button class="action-btn secondary" id="refreshBtnExternal">Refresh</button>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>Event Log</h3>
+        <div id="event-log" class="event-log">
+          <div class="event-log-entry">
+            <span class="event-log-time">--:--:--</span>
+            <span class="event-log-type">Waiting for events...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h3>How to Get a Widget Token</h3>
+        <p style="color: #6b7280; font-size: 14px; margin: 0">
+          To reveal a PIN, you need a widget token from the Synctera API:
+        </p>
+        <pre
+          style="
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            overflow-x: auto;
+          "
+        >
+GET /v2/cards/{card_id}/widget_token?widget_type=GET_PIN
+
+Response:
+{
+  "tenant": "abcdef_ghijkl",
+  "widget_token": "0b0319e2-d5f4-49cb-b426-9ff9b2e96969"
+}</pre
+        >
+      </div>
+    </div>
+
+    <script>
+      const widget = document.getElementById('reveal-pin-widget');
+      const widgetContainer = document.getElementById('widget-container');
+      const eventLog = document.getElementById('event-log');
+      const widgetTokenInput = document.getElementById('widgetToken');
+      const themeButtons = document.querySelectorAll('.theme-btn[data-theme]');
+      const autohideButtons = document.querySelectorAll('.theme-btn[data-autohide]');
+
+      function logEvent(type, detail = '') {
+        const time = new Date().toLocaleTimeString();
+        const entry = document.createElement('div');
+        entry.className = 'event-log-entry';
+
+        let typeClass = 'event-log-type';
+        if (type === 'load' || type.includes('success')) typeClass = 'event-log-success';
+        if (type.includes('failure') || type.includes('error')) typeClass = 'event-log-failure';
+
+        entry.innerHTML = `
+          <span class="event-log-time">${time}</span>
+          <span class="${typeClass}">${type}</span>
+          ${detail ? `<span> - ${detail}</span>` : ''}
+        `;
+
+        const waiting = eventLog.querySelector('.event-log-entry');
+        if (waiting && waiting.textContent.includes('Waiting')) {
+          waiting.remove();
+        }
+
+        eventLog.prepend(entry);
+      }
+
+      function attachWidgetEvents(el, label) {
+        el.addEventListener('load', (e) => {
+          logEvent('load', `${label}: ready (${e.detail?.instanceId?.slice(0, 8) || ''})`);
+        });
+        el.addEventListener('error', (e) => {
+          const failed = (e.detail?.failedFields || []).join(', ');
+          logEvent(
+            'error',
+            `${label}: ${e.detail?.error || 'Initialization failed'}${failed ? ` [${failed}]` : ''}`
+          );
+        });
+        el.addEventListener('success', () => {
+          logEvent('success', `${label}: PIN revealed (PIN stays inside the iframe)`);
+        });
+        el.addEventListener('failure', (e) => {
+          logEvent('failure', `${label}: ${e.detail?.error || 'Unknown error'}`);
+        });
+      }
+
+      attachWidgetEvents(widget, 'Widget 1');
+
+      widgetTokenInput.addEventListener('input', (e) => {
+        const token = e.target.value.trim();
+        if (token) {
+          widget.setAttribute('token', token);
+          document.getElementById('reveal-pin-widget-external').setAttribute('token', token);
+          logEvent('token-updated', token.substring(0, 20) + '...');
+        }
+      });
+
+      themeButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const theme = btn.dataset.theme;
+          themeButtons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          widget.setAttribute('theme', theme);
+          logEvent('theme-changed', theme);
+        });
+      });
+
+      autohideButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const seconds = btn.dataset.autohide;
+          autohideButtons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          widget.setAttribute('auto-hide-seconds', seconds);
+          document
+            .getElementById('reveal-pin-widget-external')
+            .setAttribute('auto-hide-seconds', seconds);
+          logEvent('auto-hide-changed', seconds === '0' ? 'off' : `${seconds}s`);
+        });
+      });
+
+      const widgetExternal = document.getElementById('reveal-pin-widget-external');
+      attachWidgetEvents(widgetExternal, 'Widget 2');
+
+      document.getElementById('revealBtnExternal').addEventListener('click', () => {
+        widgetExternal.requestPin();
+        logEvent('reveal-requested', 'Widget 2: fetching PIN...');
+      });
+
+      document.getElementById('refreshBtnExternal').addEventListener('click', () => {
+        widgetExternal.refresh();
+        logEvent('refresh-requested', 'Widget 2: re-fetching PIN...');
+      });
+
+      logEvent('initialized', 'Reveal PIN widgets loaded');
+    </script>
+  </body>
+</html>
